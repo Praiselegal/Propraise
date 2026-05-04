@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Editor Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --ink: #0a0a0a;
+    --paper: #f2efe8;
+    --accent: #d4502a;
+    --mid: #6b6560;
+    --line: rgba(107,101,96,0.25);
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--ink); color: var(--paper); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+  .cursor { position: fixed; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); mix-blend-mode: difference; }
+  .cursor-ring { position: fixed; width: 36px; height: 36px; border: 1px solid var(--paper); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: width 0.3s, height 0.3s; mix-blend-mode: difference; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); opacity: 0.028; pointer-events: none; z-index: 9997; }
+
+/* HERO */
+#hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; position: relative; overflow: hidden; }
+.hero-left { display: flex; flex-direction: column; justify-content: flex-end; padding: 0 0 7vh 6vw; position: relative; z-index: 2; }
+.hero-eyebrow { font-size: clamp(10px,1.1vw,13px); letter-spacing: 0.35em; text-transform: uppercase; color: var(–mid); margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.8s 0.3s forwards; }
+.hero-name { font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(80px,12vw,190px); line-height: 0.88; opacity: 0; animation: fadeUp 0.9s 0.5s forwards; }
+.hero-name em { color: var(–accent); font-style: normal; }
+.hero-tagline { font-size: clamp(13px,1.2vw,16px); color: var(–mid); max-width: 340px; margin-top: 2.5rem; line-height: 1.8; opacity: 0; animation: fadeUp 0.8s 0.8s forwards; }
+.hero-cta { margin-top: 3.5rem; display: flex; gap: 1.2rem; opacity: 0; animation: fadeUp 0.8s 1s forwards; }
+.btn { display: inline-block; padding: 0.85rem 2.2rem; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; text-decoration: none; transition: all 0.3s; cursor: none; }
+.btn-primary { background: var(–accent); color: var(–paper); }
+.btn-primary:hover { background: #bf4422; }
+.btn-outline { border: 1px solid var(–line); color: var(–mid); }
+.btn-outline:hover { border-color: var(–paper); color: var(–paper); }
+.hero-right { position: relative; overflow: hidden; }
+.reel-box { width: 100%; height: 100%; background: #0e0e0e; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.2rem; position: relative; overflow: hidden; opacity: 0; animation: fadeIn 1.4s 0.6s forwards; }
+.reel-box::before { content: ‘’; position: absolute; inset: 0; background: linear-gradient(135deg, #1a0800 0%, #0a0a0a 55%, #001510 100%); }
+.reel-box::after { content: ‘’; position: absolute; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px); pointer-events: none; }
+.reel-strip { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 2px; background: repeating-linear-gradient(to bottom, var(–accent) 0px, var(–accent) 16px, transparent 16px, transparent 28px); opacity: 0.2; }
+.play-btn { position: relative; z-index: 2; width: 72px; height: 72px; border: 1px solid rgba(242,239,232,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: border-color 0.3s, transform 0.3s; cursor: none; }
+.play-btn:hover { border-color: var(–accent); transform: scale(1.1); }
+.play-btn svg { width: 22px; fill: var(–paper); margin-left: 4px; }
+.reel-label { position: relative; z-index: 2; font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: var(–mid); }
+.hero-bg-num { position: absolute; bottom: 5vh; right: 4vw; font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(100px,15vw,200px); color: rgba(242,239,232,0.035); line-height: 1; pointer-events: none; }
+
+/* TICKER */
+.ticker { border-top: 1px solid var(–line); border-bottom: 1px solid var(–line); padding: 0.9rem 0; overflow: hidden; white-space: nowrap; }
+.ticker-inner { display: inline-block; animation: tick 22s linear infinite; }
+.ticker-inner span { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(–mid); padding: 0 2.5rem; }
+.ticker-inner span.d { color: var(–accent); padding: 0; }
+@keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ABOUT */
+#about { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(–line); }
+.about-left { padding: 10vh 6vw; border-right: 1px solid var(–line); }
+.section-label { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(–accent); margin-bottom: 3rem; display: flex; align-items: center; gap: 1rem; }
+.section-label::after { content: ‘’; flex: 1; height: 1px; background: var(–line); }
+.about-headline { font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(38px,5vw,72px); line-height: 1; margin-bottom: 2.5rem; }
+.about-body { font-size: clamp(13px,1.1vw,15px); line-height: 1.9; color: var(–mid); max-width: 420px; }
+.about-right { padding: 10vh 6vw; }
+.stat-row { display: flex; align-items: flex-end; justify-content: space-between; padding: 2.2rem 0; border-bottom: 1px solid var(–line); }
+.stat-row:first-child { border-top: 1px solid var(–line); }
+.stat-num { font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(50px,6vw,90px); line-height: 1; }
+.stat-num sup { color: var(–accent); font-size: 0.45em; vertical-align: super; }
+.stat-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(–mid); text-align: right; max-width: 120px; line-height: 1.5; }
+
+/* SKILLS */
+#skills { border-top: 1px solid var(–line); padding: 10vh 6vw; }
+.sec-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6vh; }
+.sec-title { font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(42px,6vw,86px); line-height: 1; }
+.skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(–line); }
+.skill-card { background: var(–ink); padding: 3rem 2.5rem; transition: background 0.3s; position: relative; overflow: hidden; }
+.skill-card:hover { background: #111; }
+.skill-card::after { content: ‘’; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(–accent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
+.skill-card:hover::after { transform: scaleX(1); }
+.skill-icon { font-size: 26px; margin-bottom: 1.4rem; }
+.skill-name { font-family: ‘Bebas Neue’, sans-serif; font-size: 22px; letter-spacing: 0.03em; margin-bottom: 0.8rem; }
+.skill-desc { font-size: 13px; line-height: 1.75; color: var(–mid); margin-bottom: 1.6rem; }
+.bar-bg { height: 2px; background: var(–line); position: relative; }
+.bar-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(–accent); transition: width 1.3s cubic-bezier(0.25,1,0.5,1); }
+
+/* WORK */
+#work { border-top: 1px solid var(–line); padding: 10vh 6vw; }
+.work-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6vh; }
+.work-note { font-size: 13px; color: var(–mid); max-width: 200px; text-align: right; line-height: 1.7; }
+.work-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.1rem; }
+.work-item { position: relative; overflow: hidden; background: #111; cursor: none; }
+.work-item:nth-child(1) { grid-column: span 7; aspect-ratio: 16/9; }
+.work-item:nth-child(2) { grid-column: span 5; aspect-ratio: 4/3; }
+.work-item:nth-child(3) { grid-column: span 4; aspect-ratio: 4/3; }
+.work-item:nth-child(4) { grid-column: span 8; aspect-ratio: 16/9; }
+.work-item:nth-child(5) { grid-column: span 6; aspect-ratio: 4/3; }
+.work-item:nth-child(6) { grid-column: span 6; aspect-ratio: 4/3; }
+.work-thumb { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(36px,5vw,80px); color: rgba(242,239,232,0.055); transition: transform 0.6s cubic-bezier(0.25,1,0.5,1); }
+.work-item:nth-child(1) .work-thumb { background: linear-gradient(135deg,#1a0800,#0d0d0d); }
+.work-item:nth-child(2) .work-thumb { background: linear-gradient(135deg,#00100a,#0a0a0a); }
+.work-item:nth-child(3) .work-thumb { background: linear-gradient(135deg,#0a0014,#0d0d0d); }
+.work-item:nth-child(4) .work-thumb { background: linear-gradient(135deg,#001a0a,#0d0d0d); }
+.work-item:nth-child(5) .work-thumb { background: linear-gradient(135deg,#1a1000,#0d0d0d); }
+.work-item:nth-child(6) .work-thumb { background: linear-gradient(135deg,#1a0008,#0d0d0d); }
+.work-item:hover .work-thumb { transform: scale(1.05); }
+.work-overlay { position: absolute; inset: 0; background: rgba(10,10,10,0.72); display: flex; flex-direction: column; justify-content: flex-end; padding: 1.8rem; opacity: 0; transition: opacity 0.35s; }
+.work-item:hover .work-overlay { opacity: 1; }
+.work-tag { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(–accent); margin-bottom: 0.5rem; }
+.work-name { font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(16px,2vw,26px); line-height: 1.1; }
+
+/* SERVICES */
+#services { border-top: 1px solid var(–line); padding: 10vh 6vw; }
+.services-inner { display: grid; grid-template-columns: 1fr 2fr; gap: 8vw; }
+.services-headline { font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(38px,5vw,68px); line-height: 1; margin-bottom: 1.8rem; }
+.services-body { font-size: 14px; line-height: 1.8; color: var(–mid); margin-bottom: 2.5rem; }
+.service-list { display: flex; flex-direction: column; }
+.service-item { display: grid; grid-template-columns: 2rem 1fr auto; align-items: center; gap: 1.5rem; padding: 1.8rem 0; border-bottom: 1px solid var(–line); transition: padding-left 0.3s; cursor: none; }
+.service-item:first-child { border-top: 1px solid var(–line); }
+.service-item:hover { padding-left: 0.6rem; }
+.service-num { font-family: ‘Bebas Neue’, sans-serif; font-size: 13px; color: var(–accent); }
+.service-name { font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(18px,2.2vw,30px); }
+.service-arrow { color: var(–mid); font-size: 18px; transition: color 0.3s, transform 0.3s; }
+.service-item:hover .service-arrow { color: var(–accent); transform: translateX(5px); }
+
+/* CONTACT */
+#contact { border-top: 1px solid var(–line); padding: 12vh 6vw; text-align: center; position: relative; overflow: hidden; }
+#contact::before { content: ‘HIRE’; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(120px,22vw,320px); color: rgba(242,239,232,0.022); pointer-events: none; white-space: nowrap; }
+.contact-label { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; color: var(–accent); margin-bottom: 2rem; }
+.contact-headline { font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(50px,8vw,130px); line-height: 0.92; margin-bottom: 2.5rem; position: relative; z-index: 2; }
+.contact-sub { font-size: 14px; color: var(–mid); margin-bottom: 3.5rem; line-height: 1.75; }
+.contact-email { display: inline-block; font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(22px,3.5vw,50px); color: var(–paper); text-decoration: none; border-bottom: 2px solid var(–accent); padding-bottom: 4px; transition: color 0.3s; position: relative; z-index: 2; cursor: none; }
+.contact-email:hover { color: var(–accent); }
+.contact-social { display: flex; justify-content: center; gap: 2rem; margin-top: 4rem; position: relative; z-index: 2; }
+.social-link { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(–mid); text-decoration: none; transition: color 0.3s; cursor: none; }
+.social-link:hover { color: var(–paper); }
+
+/* FOOTER */
+footer { border-top: 1px solid var(–line); padding: 2rem 6vw; display: flex; justify-content: space-between; align-items: center; font-size: 11px; letter-spacing: 0.15em; color: var(–mid); }
+.footer-logo { font-family: ‘Bebas Neue’, sans-serif; font-size: 18px; color: var(–paper); }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+#hero { grid-template-columns: 1fr; }
+.hero-right { height: 55vw; }
+#about { grid-template-columns: 1fr; }
+.about-left { border-right: none; border-bottom: 1px solid var(–line); }
+.skills-grid { grid-template-columns: 1fr 1fr; }
+.services-inner { grid-template-columns: 1fr; }
+.work-item:nth-child(n) { grid-column: span 12; }
+footer { flex-direction: column; gap: 1rem; text-align: center; }
+}
+@media (max-width: 600px) {
+.skills-grid { grid-template-columns: 1fr; }
+.hero-cta { flex-direction: column; }
+}
+</style>
+
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- HERO -->
+
+<section id="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Video Editor &nbsp;·&nbsp; Motion Designer &nbsp;·&nbsp; Storyteller</p>
+    <h1 class="hero-name">YOUR<br><em>NAME</em><br>HERE</h1>
+    <p class="hero-tagline">Crafting frame-perfect narratives that move audiences — from cinematic short films to high-impact brand reels.</p>
+    <div class="hero-cta">
+      <a href="#work" class="btn btn-primary">View Work</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="reel-box">
+      <div class="reel-strip"></div>
+      <div class="play-btn" onclick="alert('Replace this with your showreel embed!')">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <span class="reel-label">Showreel 2026</span>
+    </div>
+  </div>
+  <div class="hero-bg-num">2026</div>
+</section>
+
+<!-- TICKER -->
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>Premiere Pro</span><span class="d">—</span><span>After Effects</span><span class="d">—</span><span>DaVinci Resolve</span><span class="d">—</span><span>Color Grading</span><span class="d">—</span><span>Sound Design</span><span class="d">—</span><span>Motion Graphics</span><span class="d">—</span><span>Short Film</span><span class="d">—</span><span>Brand Content</span><span class="d">—</span><span>Social Media</span><span class="d">—</span><span>Documentary</span><span class="d">—</span>
+    <span>Premiere Pro</span><span class="d">—</span><span>After Effects</span><span class="d">—</span><span>DaVinci Resolve</span><span class="d">—</span><span>Color Grading</span><span class="d">—</span><span>Sound Design</span><span class="d">—</span><span>Motion Graphics</span><span class="d">—</span><span>Short Film</span><span class="d">—</span><span>Brand Content</span><span class="d">—</span><span>Social Media</span><span class="d">—</span><span>Documentary</span><span class="d">—</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+
+<section id="about">
+  <div class="about-left reveal">
+    <div class="section-label">About</div>
+    <h2 class="about-headline">Story Is<br>Everything.</h2>
+    <p class="about-body">
+      I'm an aspiring video editor obsessed with the craft of visual storytelling. Every cut, transition, and color grade is a deliberate choice — one that serves the emotional truth of the story.<br><br>
+      From narrative shorts to brand campaigns, I bring raw footage to life with pacing, rhythm, and intention. I work fast, communicate clearly, and deliver edits that exceed expectations.
+    </p>
+  </div>
+  <div class="about-right reveal">
+    <div class="stat-row">
+      <div class="stat-num">50<sup>+</sup></div>
+      <div class="stat-label">Projects Completed</div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Years Editing Experience</div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-num">12<sup>+</sup></div>
+      <div class="stat-label">Software Tools Mastered</div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-num">100<sup>%</sup></div>
+      <div class="stat-label">Client Satisfaction Rate</div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+
+<section id="skills">
+  <div class="sec-header reveal">
+    <div>
+      <div class="section-label">Expertise</div>
+      <h2 class="sec-title">What I Do</h2>
+    </div>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card reveal">
+      <div class="skill-icon">✂️</div>
+      <div class="skill-name">Editing & Assembly</div>
+      <div class="skill-desc">Tight, purposeful cuts that drive narrative momentum and hold viewer attention from first frame to last.</div>
+      <div class="bar-bg"><div class="bar-fill" data-w="90"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">🎨</div>
+      <div class="skill-name">Color Grading</div>
+      <div class="skill-desc">From natural-light beauty to stylized cinematic looks — creating a visual mood that amplifies every scene.</div>
+      <div class="bar-bg"><div class="bar-fill" data-w="78"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">⚡</div>
+      <div class="skill-name">Motion Graphics</div>
+      <div class="skill-desc">Kinetic titles, lower thirds, and animated elements that integrate seamlessly with live-action footage.</div>
+      <div class="bar-bg"><div class="bar-fill" data-w="72"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">🔊</div>
+      <div class="skill-name">Sound Design</div>
+      <div class="skill-desc">Audio mixing, foley, and music sync — because half of what you see, you actually hear.</div>
+      <div class="bar-bg"><div class="bar-fill" data-w="68"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">📱</div>
+      <div class="skill-name">Social Media Edits</div>
+      <div class="skill-desc">Scroll-stopping Reels, TikToks, and YouTube content optimized for each platform's algorithm.</div>
+      <div class="bar-bg"><div class="bar-fill" data-w="88"></div></div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">🎬</div>
+      <div class="skill-name">Short Film & Doc</div>
+      <div class="skill-desc">Long-form narrative editing — structure, pacing, arc — building emotional payoff over time.</div>
+      <div class="bar-bg"><div class="bar-fill" data-w="75"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+
+<section id="work">
+  <div class="work-header reveal">
+    <div>
+      <div class="section-label">Portfolio</div>
+      <h2 class="sec-title">Selected Work</h2>
+    </div>
+    <p class="work-note">Hover each project to preview details.</p>
+  </div>
+  <div class="work-grid">
+    <div class="work-item reveal"><div class="work-thumb">01</div><div class="work-overlay"><span class="work-tag">Short Film</span><span class="work-name">Beneath the Static</span></div></div>
+    <div class="work-item reveal"><div class="work-thumb">02</div><div class="work-overlay"><span class="work-tag">Brand Campaign</span><span class="work-name">Nova Athletic — Launch Reel</span></div></div>
+    <div class="work-item reveal"><div class="work-thumb">03</div><div class="work-overlay"><span class="work-tag">Documentary</span><span class="work-name">The Last Workshop</span></div></div>
+    <div class="work-item reveal"><div class="work-thumb">04</div><div class="work-overlay"><span class="work-tag">Music Video</span><span class="work-name">Meridian — "Gold Dissolve"</span></div></div>
+    <div class="work-item reveal"><div class="work-thumb">05</div><div class="work-overlay"><span class="work-tag">Social Media</span><span class="work-name">Selene Skincare Series</span></div></div>
+    <div class="work-item reveal"><div class="work-thumb">06</div><div class="work-overlay"><span class="work-tag">Event Recap</span><span class="work-name">Summit Conference 2025</span></div></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+
+<section id="services">
+  <div class="services-inner">
+    <div class="reveal">
+      <div class="section-label">Services</div>
+      <h2 class="services-headline">How I<br>Can Help</h2>
+      <p class="services-body">Whether you're a brand, filmmaker, or creator — flexible editing packages tailored to your project and timeline.</p>
+      <a href="#contact" class="btn btn-primary">Start a Project</a>
+    </div>
+    <div class="service-list reveal">
+      <div class="service-item"><span class="service-num">01</span><span class="service-name">Brand & Commercial Editing</span><span class="service-arrow">→</span></div>
+      <div class="service-item"><span class="service-num">02</span><span class="service-name">Social Media Content Editing</span><span class="service-arrow">→</span></div>
+      <div class="service-item"><span class="service-num">03</span><span class="service-name">Short Film Post-Production</span><span class="service-arrow">→</span></div>
+      <div class="service-item"><span class="service-num">04</span><span class="service-name">Documentary Editing</span><span class="service-arrow">→</span></div>
+      <div class="service-item"><span class="service-num">05</span><span class="service-name">Color Grading & Finishing</span><span class="service-arrow">→</span></div>
+      <div class="service-item"><span class="service-num">06</span><span class="service-name">Motion Graphics & Titles</span><span class="service-arrow">→</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+
+<section id="contact">
+  <p class="contact-label reveal">Let's Make Something</p>
+  <h2 class="contact-headline reveal">Ready to<br>Cut?</h2>
+  <p class="contact-sub reveal">Open to freelance projects, collaborations, and full-time opportunities.</p>
+  <a href="mailto:hello@yourname.com" class="contact-email reveal">hello@yourname.com</a>
+  <div class="contact-social reveal">
+    <a href="#" class="social-link">Instagram</a>
+    <a href="#" class="social-link">Vimeo</a>
+    <a href="#" class="social-link">YouTube</a>
+    <a href="#" class="social-link">LinkedIn</a>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-logo">YOUR NAME</span>
+  <span>© 2026 — All rights reserved</span>
+  <span>Based Anywhere, Working Worldwide</span>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  });
+  (function animRing() {
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 70);
+        ro.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  revealEls.forEach(el => ro.observe(el));
+
+  // Skill bars
+  document.querySelectorAll('.bar-fill').forEach(bar => {
+    const w = bar.dataset.w + '%';
+    bar.style.width = '0';
+    const bo = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        setTimeout(() => bar.style.width = w, 300);
+        bo.unobserve(bar);
+      }
+    }, { threshold: 0.5 });
+    bo.observe(bar);
+  });
+</script>
+
+</body>
+</html>
