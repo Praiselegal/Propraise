@@ -8,13 +8,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;1,9..40,300&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    -ink: #32CD32;
-    -paper: #1E293B;
-    -accent: #34D399;
-    -mid: #0a0a0a;
-    -line: rgba(107,101,96,0.25);
-  }
+ :root {
+  --ink: #FFF9F6;       /* Soft, warm cream background (gentle on the eyes) */
+  --paper: #2D221E;     /* Deep, rich espresso brown for readable text (softer than black) */
+  --accent: #FFB7B2;    /* Beautiful aesthetic blush pink for buttons and highlights */
+  --mid: #6D5A53;       /* Muted rosy-gray for subtitles and taglines */
+  --line: rgba(109,90,83,0.15); /* Delicate matching divider lines */
+}
   html { scroll-behavior: smooth; }
   body { background: var(--ink); color: var(--paper); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
   .cursor { position: fixed; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); mix-blend-mode: difference; }
@@ -31,17 +31,18 @@
 .hero-cta { margin-top: 3.5rem; display: flex; gap: 1.2rem; opacity: 0; animation: fadeUp 0.8s 1s forwards; }
 .btn { display: inline-block; padding: 0.85rem 2.2rem; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; text-decoration: none; transition: all 0.3s; cursor: none; }
 .btn-primary { background: var(–-accent); color: var(–-paper); }
-.btn-primary:hover { background: #0F172A; }
+.btn-primary:hover { background:var(--paper) }
 .btn-outline { border: 1px solid var(-–line); color: var(-–mid); }
 .btn-outline:hover { border-color: var(–-paper); color: var(–-paper); }
 .hero-right { position: relative; overflow: hidden; }
-.reel-box { width: 100%; height: 100%; background: #0F172A; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.2rem; position: relative; overflow: hidden; opacity: 0; animation: fadeIn 1.4s 0.6s forwards; }
-.reel-box::before { content: ‘’; position: absolute; inset: 0; background: linear-gradient(135deg, #1a0800 0%, ##0F172A 55%, #001510 100%); }
-.reel-box::after { content: ‘’; position: absolute; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px); pointer-events: none; }
+.reel-box { width: 100%; height: 100%; background:var(--paper); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.2rem; position: relative; overflow: hidden; opacity: 0; animation: fadeIn 1.4s 0.6s forwards; }
+.reel-box::before { content: ‘’; position: absolute; inset: 0; background: linear-gradient(135deg, #2D221E 0%, #4A3730 100%); 
+}
+.reel-box::after { content: ‘’; position: absolute; inset: 0; background: repeating-linear-gradient(to bottom, transparent 0px, transparent 3px, rgba(255,255,255,0.03) 3px, rgba(255,255,255,0.03. 4px); pointer-events: none; }
 .reel-strip { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); width: 2px; background: repeating-linear-gradient(to bottom, var(-–accent) 0px, var(–-accent) 16px, transparent 16px, transparent 28px); opacity: 0.2; }
 .play-btn { position: relative; z-index: 2; width: 72px; height: 72px; border: 1px solid rgba(242,239,232,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: border-color 0.3s, transform 0.3s; cursor: none; }
 .play-btn:hover { border-color: var(-–accent); transform: scale(1.1); }
-.play-btn svg { width: 22px; fill: var(–-paper); margin-left: 4px; }
+.play-btn svg { width: 22px; fill: var(–-ink); margin-left: 4px; }
 .reel-label { position: relative; z-index: 2; font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: var(–-mid); }
 .hero-bg-num { position: absolute; bottom: 5vh; right: 4vw; font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(100px,15vw,200px); color: rgba(242,239,232,0.035); line-height: 1; pointer-events: none; }
 
@@ -72,7 +73,7 @@
 .sec-title { font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(42px,6vw,86px); line-height: 1; }
 .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(–-line); }
 .skill-card { background: var(–-ink); padding: 3rem 2.5rem; transition: background 0.3s; position: relative; overflow: hidden; }
-.skill-card:hover { background: #111; }
+.skill-card:hover { background: var(--paper); color: var(--ink); }
 .skill-card::after { content: ‘’; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(–-accent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
 .skill-card:hover::after { transform: scaleX(1); }
 .skill-icon { font-size: 26px; margin-bottom: 1.4rem; }
@@ -94,17 +95,18 @@
 .work-item:nth-child(5) { grid-column: span 6; aspect-ratio: 4/3; }
 .work-item:nth-child(6) { grid-column: span 6; aspect-ratio: 4/3; }
 .work-thumb { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(36px,5vw,80px); color: rgba(242,239,232,0.055); transition: transform 0.6s cubic-bezier(0.25,1,0.5,1); }
-.work-item:nth-child(1) .work-thumb { background: linear-gradient(135deg,#1a0800,#0d0d0d); }
-.work-item:nth-child(2) .work-thumb { background: linear-gradient(135deg,#00100a,#0a0a0a); }
-.work-item:nth-child(3) .work-thumb { background: linear-gradient(135deg,#0a0014,#0d0d0d); }
-.work-item:nth-child(4) .work-thumb { background: linear-gradient(135deg,#001a0a,#0d0d0d); }
-.work-item:nth-child(5) .work-thumb { background: linear-gradient(135deg,#1a1000,#0d0d0d); }
-.work-item:nth-child(6) .work-thumb { background: linear-gradient(135deg,#1a0008,#0d0d0d); }
+.work-item:nth-child(1) .work-thumb { background: linear-gradient(135deg, #FFE5EC, #FFC2D1); } /* Soft Rose Pink */
+.work-item:nth-child(2) .work-thumb { background: linear-gradient(135deg, #E8E8E4, #D8E2DC); } /* Clean Sage / Cream */
+.work-item:nth-child(3) .work-thumb { background: linear-gradient(135deg, #EAE4E9, #FFF1E6); } /* Soft Lavender & Peach */
+.work-item:nth-child(4) .work-thumb { background: linear-gradient(135deg, #FDE2E4, #FFCAD4); } /* Sweet Blush Pink */
+.work-item:nth-child(5) .work-thumb { background: linear-gradient(135deg, #FFCAD4, #B5E2FA); } /* Pink to Soft Sky Blue */
+.work-item:nth-child(6) .work-thumb { background: linear-gradient(135deg, #F0E6EF, #E2ECE9); } /* Pastel Lilac to Mint */
 .work-item:hover .work-thumb { transform: scale(1.05); }
-.work-overlay { position: absolute; inset: 0; background: rgba(10,10,10,0.72); display: flex; flex-direction: column; justify-content: flex-end; padding: 1.8rem; opacity: 0; transition: opacity 0.35s; }
+.work-overlay { position: absolute; inset: 0; background: rgba(255, 183, 178, 0.92); /* Soft rose gold/pink with 92% opacity */
+  display: flex;); display: flex; flex-direction: column; justify-content: flex-end; padding: 1.8rem; opacity: 0; transition: opacity 0.35s; }
 .work-item:hover .work-overlay { opacity: 1; }
-.work-tag { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(–accent); margin-bottom: 0.5rem; }
-.work-name { font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(16px,2vw,26px); line-height: 1.1; }
+.work-tag { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(–-accent); margin-bottom: 0.5rem; }
+.work-name { font-family: ‘Bebas Neue’, sans-serif; font-size: clamp(16px,2vw,26px); line-height: 1.1; color: var(--paper); }
 
 /* SERVICES */
 #services { border-top: 1px solid var(–-line); padding: 10vh 6vw; }
